@@ -2,6 +2,7 @@ package br.com.datalab.importer.model;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,5 +20,5 @@ public class User {
     private Boolean active;
     private String country;
     private Team team;
-    private Set<Log> logs;
+    private List<Log> logs;
 }

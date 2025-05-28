@@ -2,7 +2,7 @@ package br.com.datalab.importer.model;
 
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Getter
@@ -11,6 +11,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class Log {
 
-    private Date date;
+    private LocalDate date;
     private String action;
 }

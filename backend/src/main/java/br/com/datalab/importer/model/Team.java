@@ -2,7 +2,7 @@ package br.com.datalab.importer.model;
 
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Getter
@@ -13,5 +13,5 @@ public class Team {
 
     private String name;
     private Boolean leader;
-    private Set<Project> projects;
+    private List<Project> projects;
 }

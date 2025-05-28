@@ -1,21 +1,35 @@
 package br.com.datalab.importer.service;
 
+import br.com.datalab.importer.model.Log;
 import br.com.datalab.importer.model.TeamInsight;
 import br.com.datalab.importer.model.User;
 import br.com.datalab.importer.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class AnalysisService {
+public class UserService {
 
     private final UserRepository repository;
+
+    /**
+     * Salvar todos os usuários em memória
+     * */
+    public void saveAll(List<User> users) {
+        repository.saveAll(users);
+    }
+
+    /**
+     * Recuperar todos os usuários em memória
+     * */
+    public Collection<User> findAll() {
+        return repository.findAll();
+    }
 
     /**
      * GET /superusers
@@ -29,6 +43,7 @@ public class AnalysisService {
                 .filter( user -> user.getScore() >= 900 && user.getActive())
                 .toList();
     }
+
     /**
      * GET /top-countries
      * Agrupa os superusuários por país.
@@ -71,6 +86,16 @@ public class AnalysisService {
      * Conta quantos logins aconteceram por data.
      * Query param opcional: ?min=3000 para filtrar dias com pelo menos 3.000 logins.
      * */
+    public Map<LocalDate, Long> getLoginPerDay(int minimumLoginCount) {
+        return repository.findAll().parallelStream()
+                .flatMap(u -> u.getLogs().stream())
+                .filter(l -> "login".equalsIgnoreCase(l.getAction()))
+                .collect(Collectors.groupingBy(Log::getDate, Collectors.counting()))
+                .entrySet().stream()
+                .filter(e -> e.getValue() >= minimumLoginCount)
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
 
+    }
     
 }
